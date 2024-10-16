@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Predictior</title>
+    <style>
+        body {
+         font-family: Arial, "Helvetica", sans-serif; 
+         background-color: rgb(215, 218, 218); 
+         margin: 0px;
+         padding: 0px;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         height: 100vh;
+        }
+        .container{
+            background-color: aliceblue;
+            padding: 40px;
+            border-radius: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+            text-align: center;
+            width: 400px;
+        }
+
+        h1{
+            color: rgb(5, 119, 5);
+        }
+
+        p{
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        input[type="file"]{
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        button{
+            background-color: rgb(44, 252, 54);
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+    <body>
+        <div class="container">
+            <h1>Plant Disease Predictior</h1>
+            <p>Upload an image of a plant leaf to detect if it is diseased</p>
+            <form id="uploadform" method="POST" enctype="multipart/form-data">
+                <!-- <input type="checkbox" name="Male" placeholder="Male"> Male
+                <input type="checkbox" name="Female" placeholder="Female"> Female
+                <input type="checkbox" name="Others" placeholder="Others"> Others -->
+                <input type="file" name="file" id="file" accept="image/*" required>
+                <br>
+                <br>
+                <button type="submit">Predict</button>
+            </form>
+            <div class="result" id="result">
+            <script>
+                document.getElementById("uploadForm").onsubmit= async function name(e) {
+                    
+                }
+            </script>
+            </div>
+        </div>        
+    </body>
+</html>
