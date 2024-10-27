@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta charset="viewport" content="width=device-width", initial-scale="1.0">
         <title>Plant Disease Prediction</title>
-        <style>
+        <!-- <style>
             body{
                 font-family: Arial, Helvetica, sans-serif;
                 background-color: #f0f8ff;
@@ -66,55 +66,72 @@
                 display: none;
             }
             
-        </style>
-        <script>
+        </style> -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style/main_index.css') }}" />
+        <!-- <script>
             function previewImage(event){
                 const image = document.getElementById('uploadImage');
                 image.src = URL.createObjectURL(event.target.file[0]);
                 image.style.display = "block";
             }
-        </script>
+        </script> -->
+        <script src="../scripts/main_index.js"></script>
     </head>
     <body>
-        <h1>Upload Plant Image</h1>
-        <form action="/predict" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" accept="image/*" required onchange="previewImage(event)">
-            <br>
-            <input type="submit" value="Predict">
-        </form>
-            <div id="imageContainer">
-                <div id="result"></div>
-                <img id="uploadImage" alt="Uploaded Image Preview">
-            </div>
-            <script>
-                // Handle Prediction from the server
-                document.querySelector('form').onsubmit = async function (event) {
-                    event.preventDefault();
 
-                    const formData = new FormData(event.target);
-                    const response = await fetch("/predict", {
-                        method: "POST",
-                        body: formData,
-                    });
+        <!-- Prediction form -->
+        <div id="form">
+            <form action="/predict" method="post" enctype="multipart/form-data">
+                <h3>Upload Plant Image</h3>
+                <input type="file" name="file" accept="image/*" required onchange="previewImage(event)">
+                <br>
+                <input type="submit" value="Predict">
+            </form>
+                <div id="imageContainer">
+                    <div id="result"></div>
+                    <img id="uploadImage" alt="Uploaded Image Preview">
+                </div>
+                <!-- <script>
+                    // Handle Prediction from the server
+                    document.querySelector('form').onsubmit = async function (event) {
+                        event.preventDefault();
 
-                    //Render the file to Json
+                        const formData = new FormData(event.target);
+                        const response = await fetch("/predict", {
+                            method: "POST",
+                            body: formData,
+                        });
 
-                    const result = await response.json();
+                        //Render the file to Json
 
-                    // Display Prediction result
+                        const result = await response.json();
 
-                    const resultDiv= document.getElementById("result");
+                        // Display Prediction result
 
-                    //If there is a response
-                    if (response.ok){
-                        resultDiv.innerHTML = `predicted Disease: ${result.presicted_disease} (Confidence: ${result.confidence.toFixed(2)}%)`;
-                    
-                    //If there is no reponse
-                    }else{
-                        resultDiv.innerHTML = `Error: ${result.error}`;
-                    }
-                };
-            </script>
-        </form>
+                        const resultDiv= document.getElementById("result");
+
+                        //If there is a response
+                        if (response.ok){
+                            resultDiv.innerHTML = `predicted Disease: ${result.presicted_disease} (Confidence: ${result.confidence.toFixed(2)}%)`;
+                        
+                        //If there is no reponse
+                        }else{
+                            resultDiv.innerHTML = `Error: ${result.error}`;
+                        }
+                    };
+                </script> -->
+                <script src="../scripts/main_index.js"></script>
+            </form>
+        </div>
+
+        <!-- Description of Project (dop) -->
+        <div id="dop">
+            
+            <h1>Plant Disease Prediction Using Machine Learning</h1>
+
+            <h3>Objective</h3>
+            <p>To develop a trained model that enables farmers to predict plant diseases based on image classification.</p>
+        </div>
+
     </body>
 </html>
