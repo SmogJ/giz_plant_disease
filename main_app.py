@@ -5,14 +5,14 @@ import pandas as pd
 import tensorflow as tf
 
 from tensorflow.keras.models import load_model
-from tensortlow.keras.preprocessing import image
+from tensorflow.keras.preprocessing import image
 from PIL import Image as PILImage
 
 import os
 import io
 
 # set the envirnomental variables to disable  oneDNN  Optimizations
-
+main_app = Flask(__name__)
 os.environ["IF_ENABLE_ONEDNN_OPTS"] = "0"
 
 #  Load the training CNN model
@@ -20,7 +20,7 @@ os.environ["IF_ENABLE_ONEDNN_OPTS"] = "0"
 MODEL_PATH= "./models/trained_plant_disease_model.h5"
 model = load_model(MODEL_PATH)
 
-model.compile(optimizer= "adam", rloss="categoriacal_crossentrophy", metrics= ["accuracy"])
+model.compile(optimizer= "adam", loss="categoriacal_crossentrophy", metrics= ["accuracy"])
 
 disease_classes = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy Apple',
                    'Blueberry Healthy', 'Cherry Powdery Mildew', 'Healthy Cherry',
@@ -36,12 +36,12 @@ disease_classes = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy
                    'Tomato Spider Mites Two-Spotted Spider Mite', 'Tomato Target Spot',
                    'Tomato Yellow Leaf Curl Virus', 'Tomato Mosaic Virus', 'Healthy Tomato']
 
-@app.route("/")
+@main_app.route("/")
 def home():
     return render_template("main_index.html")
 
 # Prediction route
-@app.route("/predict", method=["POST"])
+@main_app.route("/predict", methods=["POST"])
 def predict():
     # check if file is in the request
     if "file" not in request.files:
@@ -67,4 +67,4 @@ def predict():
     return jsonify({"predicted _disease": predicted_disease, "confidence": confidence})
 
 if __name__=="__main__":
-    app.run(debug=True)
+    main_app.run(debug=True)
