@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Predictor</title>
+    <!-- <style>
+        :root {
+            --clr-main: hsl(120, 65%, 68%);
+            --clr-main_lht: hsla(120, 65%, 68%, 0.1);
+        }
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background-color: var(--clr-main_lht);
+        }
+        .container {
+            margin-block: 3.8em 1.8em;
+            margin-inline: auto;
+            padding: 2em 2.5em;
+            width: max-content;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            outline: 2px solid var(--clr-main);
+        }
+        h1 {
+            margin-bottom: 0.5em;
+            margin-left: -7px;
+            color: var(--clr-main);
+        }
+        p {
+            margin-bottom: 1em;
+            font-size: 17px;
+        }
+        input {
+            display: block;
+            margin-bottom: 1em;
+        }
+        button {
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: var(--clr-main);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            &:hover {
+                background-color: hsl(120, 65%, 62%);
+            }
+            &:active {
+                background-color: hsl(120, 65%, 72%);
+            }
+        }
+        .resultContainer {
+            margin-inline: auto;
+            padding: 1.7em;
+            width: max-content;
+            background-color: white;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            outline: 2px solid var(--clr-main);
+            /* display: none; */
+        }
+        #result{
+            margin-bottom: 1em;
+            font-size: 24px;
+            color: var(--clr-main);
+            font-weight: 700;
+            display: none;
+
+            span:first-child,
+            #confidence {
+                font-weight: 500;
+            }
+        }
+        .overview {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--clr-main);
+            width: 60px;
+            height: 30px;
+            padding-top: 6.5px;
+            border-radius: 999px 999px 0 0;
+            text-decoration: none;
+            overflow: hidden;
+            text-align: center;
+            transition: width 150ms;
+            &:hover {
+                width: 180px;
+                transition: width 180ms;
+                span {
+                    opacity: 1;
+                    transition: opacity 180ms;
+                }
+            }
+            span {
+                opacity: 0;
+                color: hsl(0, 0%, 96%);
+                font-weight: 500;
+                text-wrap: nowrap;
+
+            }
+        }
+    </style> -->
+    <link rel="stylesheet" href="../styles/predictor.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Plant Disease Predictor</h1>
+        <p>Upload an image of a plant leaf to detect if it is diseased</p>
+        <form id="uploadform" action="/predict" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required onchange="previewImage(event)">
+            <button type="submit">Predict</button>
+        </form>
+    </div>
+
+    <div class="resultContainer">
+        <div id="result">
+            <span id="one">Predicted Disease: </span>
+            <span id="disease"></span>
+            <span id="confidence"></span>
+        </div>
+        <img id="uploadedImage" alt="Uploaded Image Preview">
+    </div>
+
+    <a href="{{ url_for('overview') }}" class="overview"><span>Project Overview</span></a>
+
+    <!-- <script>
+        const resultCont = document.querySelector('.resultContainer');
+        const resultDiv = document.getElementById('result');
+        
+        // File input onchange function
+        function previewImage(event) {
+            // resultCont.style.display = 'block';
+            resultDiv.style.display = 'none';
+            const image = document.getElementById('uploadedImage');
+            image.src = URL.createObjectURL(event.target.files[0]);
+        }
+        
+        // Handle prediction results from the server
+        document.querySelector('form').onsubmit = async function(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+            
+            const formData = new FormData(event.target);
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json();
+            
+            // Display prediction result
+            const disease = document.getElementById('disease');
+            const confidence = document.getElementById('confidence');
+            if (response.ok) {
+                // resultCont.style.display = 'block';
+                resultDiv.style.display = 'block';
+                disease.innerHTML = `${result.predicted_disease} `;
+                confidence.innerHTML = `(Confidence: ${result.confidence.toFixed(2)}%)`;
+            } else {
+                // resultCont.style.display = 'block';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `Error: ${result.error}`;
+            }
+        };
+    </script> -->
+<script src="../scripts/predictor.js"></script>
+</body>
+</html>
