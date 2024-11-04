@@ -111,7 +111,8 @@
             }
         }
     </style> -->
-    <link rel="stylesheet" href="../styles/predictor.css">
+    <!-- <link rel="stylesheet" href="../styles/predictor.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/predictor.css') }}">
 </head>
 <body>
     <div class="container">
@@ -172,6 +173,7 @@
             }
         };
     </script> -->
-<script src="../scripts/predictor.js"></script>
+<!-- <script src="../scripts/predictor.js"></script> -->
+<script src="{{ url_for('static', filename='scripts/predictor.js') }}"></script>
 </body>
 </html>
