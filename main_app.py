@@ -42,7 +42,7 @@ disease_classes = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy
 # main_index
 @main_app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index_1.html")
 
 #overview page
 # @main_app.route("/")
@@ -55,11 +55,25 @@ def predict():
     # check if file is in the request
     if "file" not in request.files:
         return jsonify("error: 'No File Provided/Uploaded'"), 400
+    
+    # Get the uploaded image file
+    img_file = request.files['file']
+
+    # Read the image data as bytes
+    img_data = img_file.read()
+
+    # Create an in-memory file-like object
+    img_stream = io.BytesIO(img_data)
     # GEt the file and process it
-    img_file= PILImgage.open(image_file.stream).comvert("RGB")
+    # img_file= PILImage.open(image_file.stream).comvert("RGB")
+    # Open the image from the in-memory stream
+    img = PILImage.open(img_stream)
+
+    # Convert the image to RGB format (if needed)
+    img = img.convert("RGB")
     img= img.resize([128,128])
     img_array= image.img_to_array(img)
-    img_array= np.expand_dims(imag_array, axis= 0)
+    img_array= np.expand_dims(img_array, axis= 0)
     img_array= img_array / 255.0
 
     try:
@@ -69,7 +83,8 @@ def predict():
 
 
     class_index= np.argmax(prediction, axis=1)[0]
-    confidence= np.max(predicton) * 100
+    # confidence= np.max(prediction) * 100
+    confidence = float(np.max(prediction) * 100)
 
     predicted_disease= disease_classes[class_index]
 
