@@ -11,8 +11,10 @@ from PIL import Image as PILImage
 import os
 import io
 
-# set the envirnomental variables to disable  oneDNN  Optimizations
+# Initializing flask
 main_app = Flask(__name__)
+
+# set the envirnomental variables to disable  oneDNN  Optimizations
 os.environ["IF_ENABLE_ONEDNN_OPTS"] = "0"
 
 #  Load the training CNN model
@@ -36,9 +38,16 @@ disease_classes = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy
                    'Tomato Spider Mites Two-Spotted Spider Mite', 'Tomato Target Spot',
                    'Tomato Yellow Leaf Curl Virus', 'Tomato Mosaic Virus', 'Healthy Tomato']
 
+# Render the HTML page
+# main_index
 @main_app.route("/")
 def home():
-    return render_template("main_index.html")
+    return render_template("index.html")
+
+#overview page
+# @main_app.route("/")
+# def overview():
+#     return render_template("overview.html")
 
 # Prediction route
 @main_app.route("/predict", methods=["POST"])
