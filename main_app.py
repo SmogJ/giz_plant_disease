@@ -1,29 +1,24 @@
 from flask import Flask, request, jsonify, render_template
-
 import numpy as np
-import pandas as pd
-import tensorflow as tf
-
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+import os
 from PIL import Image as PILImage
 
-import os
-import io
+# Set environment variable to disable oneDNN optimizations
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import tensorflow as tf
 
-# Initializing flask
-main_app = Flask(__name__)
+app = Flask(__name__)
 
-# set the envirnomental variables to disable  oneDNN  Optimizations
-os.environ["IF_ENABLE_ONEDNN_OPTS"] = "0"
-
-#  Load the training CNN model
-
-MODEL_PATH= "./models/trained_plant_disease_model.h5"
+# Load the trained CNN model
+MODEL_PATH = './models/trained_plant_disease_model_1.h5'
 model = load_model(MODEL_PATH)
 
-model.compile(optimizer= "adam", loss="categoriacal_crossentrophy", metrics= ["accuracy"])
+# Compile the model to avoid warnings
+model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
+# Define the disease classes (based on PlantVillage dataset)
 disease_classes = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy Apple',
                    'Blueberry Healthy', 'Cherry Powdery Mildew', 'Healthy Cherry',
                    'Corn Cercospora Leaf Spot Gray Leaf Spot', 'Corn Common Rust',
@@ -36,59 +31,46 @@ disease_classes = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy
                    'Healthy Strawberry', 'Tomato Bacterial Spot', 'Tomato Early Blight',
                    'Tomato Late Blight', 'Tomato Leaf Mold', 'Tomato Septoria Leaf Spot',
                    'Tomato Spider Mites Two-Spotted Spider Mite', 'Tomato Target Spot',
-                   'Tomato Yellow Leaf Curl Virus', 'Tomato Mosaic Virus', 'Healthy Tomato']
+                   'Tomato Yellow Leaf Curl Virus', 'Tomato Mosaic Virus', 'Healthy Tomato']
 
-# Render the HTML page
-# main_index
-@main_app.route("/")
+# Home route to serve the form page
+@app.route('/')
 def home():
-    return render_template("index_1.html")
-
-#overview page
-# @main_app.route("/")
-# def overview():
-#     return render_template("overview.html")
+    return render_template('index_1.html')
 
 # Prediction route
-@main_app.route("/predict", methods=["POST"])
+@app.route('/predict', methods=['POST'])
 def predict():
-    # check if file is in the request
-    if "file" not in request.files:
-        return jsonify("error: 'No File Provided/Uploaded'"), 400
+    # Check if a file is in the request
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
     
-    # Get the uploaded image file
+    # Get the file and preprocess it
     img_file = request.files['file']
+    
+    # Use PIL to open the image
+    img = PILImage.open(img_file.stream).convert('RGB')
+    img = img.resize((128, 128))  # Resize image
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)  # Prepare the image for prediction
+    img_array = img_array / 255.0  # Normalize the image
 
-    # Read the image data as bytes
-    img_data = img_file.read()
-
-    # Create an in-memory file-like object
-    img_stream = io.BytesIO(img_data)
-    # GEt the file and process it
-    # img_file= PILImage.open(image_file.stream).comvert("RGB")
-    # Open the image from the in-memory stream
-    img = PILImage.open(img_stream)
-
-    # Convert the image to RGB format (if needed)
-    img = img.convert("RGB")
-    img= img.resize([128,128])
-    img_array= image.img_to_array(img)
-    img_array= np.expand_dims(img_array, axis= 0)
-    img_array= img_array / 255.0
-
+    # Make the prediction
     try:
-        prediction= model.predict(img_array)
+        prediction = model.predict(img_array)
+        print("Raw prediction probabilities:", prediction)  # Log raw probabilities
     except Exception as e:
-        return jsonify("error:", str(e)), 500
+        return jsonify({'error': str(e)}), 500
+    
+    class_index = np.argmax(prediction, axis=1)[0]
+    confidence = float(np.max(prediction) * 100)  # Get the prediction confidence percentage
+    
+    # Get the predicted disease
+    predicted_disease = disease_classes[class_index]
+    print(f"Predicted Disease: {predicted_disease} (Confidence: {confidence:.2f}%)")  # Log the prediction
 
+    # Return the result as JSON
+    return jsonify({'predicted_disease': predicted_disease, 'confidence': confidence})
 
-    class_index= np.argmax(prediction, axis=1)[0]
-    # confidence= np.max(prediction) * 100
-    confidence = float(np.max(prediction) * 100)
-
-    predicted_disease= disease_classes[class_index]
-
-    return jsonify({"predicted _disease": predicted_disease, "confidence": confidence})
-
-if __name__=="__main__":
-    main_app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
